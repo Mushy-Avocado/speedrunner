@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Build and Debug Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "file": "${workspaceFolder}/dist/index.html",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "preLaunchTask": "Webpack Build"
+        }
+    ]
+}
