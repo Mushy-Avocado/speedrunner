@@ -3,8 +3,8 @@ import { ChunkRenderer } from "./ChunkRenderer.js";
 class Chunk {
     static size = 16;
 
-    constructor(chunkX, chunkY, grid, levelData, tileData) {
-        this.renderer = new ChunkRenderer(chunkX, chunkY, grid, levelData, tileData);
+    constructor(chunkX, chunkY, level) {
+        this.renderer = new ChunkRenderer(chunkX, chunkY, level);
     }
 
     setDirty() {

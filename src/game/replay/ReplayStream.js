@@ -9,12 +9,12 @@ class ReplayStream {
     isInputFinished = false;
     isTilesFinished = false;
 
-    static fromData(levelData, chunks, data) {
-        return new ReplayStream(levelData, chunks,data.username, data.inputs, data.durations, data.tileChanges);
+    static fromData(chunks, data) {
+        return new ReplayStream(chunks.level, chunks,data.username, data.inputs, data.durations, data.tileChanges);
     }
 
-    constructor(levelData, chunks, username, inputs, durations, tileChanges) {
-        this.levelData = levelData;
+    constructor(level, chunks, username, inputs, durations, tileChanges) {
+        this.level = level;
         this.chunks = chunks;
         this.inputs = inputs;
         this.durations = durations;
@@ -51,7 +51,7 @@ class ReplayStream {
         if (this.currentTileChangeIndex < this.tileChanges.length) {
             if (this.tileFrameCount >= this.tileChanges[this.currentTileChangeIndex][2]) {
                 const change = this.tileChanges[this.currentTileChangeIndex];
-                this.levelData.setTileAt(change[0], change[1]);
+                this.level.data.setTileAt(change[0], change[1]);
                 this.chunks.setDirtyAt(change[0]);
                 this.currentTileChangeIndex++;
             }

@@ -4,7 +4,7 @@ const TILE_ID = {
     DIRT: 2,
 };
 
-const tileData = {
+const tileTypes = {
     [TILE_ID.GRASS]: {
         render(tile, ctx, x, y, width, height) {
             ctx.fillStyle = "green";
@@ -19,4 +19,4 @@ const tileData = {
     },
 };
 
-export { TILE_ID, tileData };
+export { TILE_ID, tileTypes };

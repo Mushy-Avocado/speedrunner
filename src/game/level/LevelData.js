@@ -39,29 +39,6 @@ class LevelData {
         return LevelData.from(this.data.slice(), this.width);
     }
 
-    /*
-    static fromJSON(json) {
-        const result = new LevelData(json.width, json.height);
-        result.data = base64Util.toUint32Array(json.base64);
-        return result;
-    }
-
-    save() {
-        const base64 = base64Util.fromUint32Array(this.data);
-        const data = {
-            width: this.width,
-            height: this.height,
-            base64,
-        };
-        const txt = JSON.stringify(data);
-        const link = document.createElement('a');
-        link.style.display = "none";
-        link.setAttribute('href', 'data:text/plain,' + txt);
-        link.setAttribute('download', 'level.txt');
-        document.getElementsByTagName("body")[0].appendChild(link).click();
-    }
-    */
-
 }
 
 export { LevelData };

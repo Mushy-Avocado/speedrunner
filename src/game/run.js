@@ -1,21 +1,20 @@
-import { LevelData } from "./level/LevelData";
 import { Grid } from "./level/Grid";
 import { ChunkLoader } from "./level/ChunkLoader";
-import { Player } from "./entity/Player";
 import { CanvasDisplay } from "./CanvasDisplay";
 import { Camera } from "./Camera";
 import { Keyboard, Mouse } from "./Input";
 import { MainLoop } from "./MainLoop";
 import { FixedLoop } from "./FixedLoop";
 import tileDataUtil from "./util/tileDataUtil";
-import { TILE_ID, tileData } from "./data/tileData";
+import { TILE_ID, tileTypes } from "./data/tileTypes";
 import { ReplayStream } from "./replay/ReplayStream";
-import { PlayerGhost } from "./entity/PlayerGhost";
+import { GhostPlayer } from "./entity/GhostPlayer";
+import { LivePlayer } from "./entity/LivePlayer";
 import levelSaveUtil from "./util/levelSaveUtil";
 import replaySaveUtil from "./util/replaySaveUtil";
 import { PerformanceMetric } from "./PerformanceMetric";
 import { DebugUI } from "./ui/DebugUI";
-
+import { Level } from "./level/Level";
 
 function run() {
 
@@ -36,9 +35,11 @@ function run() {
     
     // Final data
     const grid = new Grid(30);
-    const chunks = new ChunkLoader(levelData, tileData, grid);
-    const ghostChunks = new ChunkLoader(ghostLevelData, tileData, grid);
-    const stream = ReplayStream.fromData(ghostLevelData, ghostChunks, replaySaveUtil.decode(replayCode));
+    const level = new Level(levelData, grid, tileTypes);
+    const chunks = new ChunkLoader(level);
+    const ghostLevel = new Level(ghostLevelData, grid, tileTypes);
+    const ghostChunks = new ChunkLoader(ghostLevel);
+    const stream = ReplayStream.fromData(ghostChunks, replaySaveUtil.decode(replayCode));
 
     // Rendering
     const canvas = document.getElementsByTagName("canvas")[0];
@@ -56,8 +57,8 @@ function run() {
     let selectedTile = tileDataUtil.setId(TILE_ID.EMPTY, TILE_ID.GRASS);
     
     // Players
-    const player = new Player(levelData, grid);
-    let ghost = stream ? new PlayerGhost(stream, grid) : null;
+    const player = new LivePlayer(level, 50, 50);
+    let ghost = stream ? new GhostPlayer(stream, 50, 50) : null;
 
     function main() {
         mainLoopMetric.startFrame();

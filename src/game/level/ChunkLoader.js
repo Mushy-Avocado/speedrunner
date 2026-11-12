@@ -15,20 +15,18 @@ class ChunkLoader {
     // Larger levels could potentially crash the page
     unloadDistantChunks = true;
 
-    constructor(levelData, tileData, grid) {
-        this.levelData = levelData;
-        this.grid = grid;
+    constructor(level) {
+        this.level = level;
         this.minChunkX = 0;
         this.minChunkY = 0;
-        this.maxChunkX = Math.ceil(levelData.width / Chunk.size);
-        this.maxChunkY = Math.ceil(levelData.height / Chunk.size);
-        this.tileData = tileData;
+        this.maxChunkX = Math.ceil(this.level.data.width / Chunk.size);
+        this.maxChunkY = Math.ceil(this.level.data.height / Chunk.size);
     }
 
     instantLoad(x, y) {
         const index = x + y * this.maxChunkX;
         if (this.chunks[index]) return;
-        const chunk = new Chunk(x, y, this.grid, this.levelData, this.tileData);
+        const chunk = new Chunk(x, y, this.level);
         this.chunks[index] = chunk;
         return chunk;
     }
@@ -37,10 +35,10 @@ class ChunkLoader {
         const index = x + y * this.maxChunkX;
         if (this.chunks[index] || this.queuedChunks.has(index)) return;
 
-        const centerX = startX / this.grid.size;
-        const centerY = startY / this.grid.size;
-        const chunkCenterX = (x + 0.5) * Chunk.size / this.grid.size;
-        const chunkCenterY = (y + 0.5) * Chunk.size / this.grid.size;
+        const centerX = startX / this.level.grid.size;
+        const centerY = startY / this.level.grid.size;
+        const chunkCenterX = (x + 0.5) * Chunk.size / this.level.grid.size;
+        const chunkCenterY = (y + 0.5) * Chunk.size / this.level.grid.size;
         const dx = chunkCenterX - centerX;
         const dy = chunkCenterY - centerY;
 
@@ -86,7 +84,7 @@ class ChunkLoader {
         }
     }
     setDirtyAt(index) {
-        this.setDirty(index % this.levelData.width, Math.floor(index / this.levelData.width));
+        this.setDirty(index % this.level.data.width, Math.floor(index / this.level.data.width));
     }
 
     queueLoadAll(startX, startY) {
@@ -106,10 +104,10 @@ class ChunkLoader {
     getViewportBounds(camera) {
         const viewport = camera.viewport;
         return {
-            minX: Math.max(this.chunkGrid.worldToCell(this.grid.worldToCell(viewport.minX)), this.minChunkX),
-            minY: Math.max(this.chunkGrid.worldToCell(this.grid.worldToCell(viewport.minY)), this.minChunkY),
-            maxX: Math.min(this.chunkGrid.worldToCell(this.grid.worldToCell(viewport.maxX)), this.maxChunkX - 1),
-            maxY: Math.min(this.chunkGrid.worldToCell(this.grid.worldToCell(viewport.maxY)), this.maxChunkY - 1)
+            minX: Math.max(this.chunkGrid.worldToCell(this.level.grid.worldToCell(viewport.minX)), this.minChunkX),
+            minY: Math.max(this.chunkGrid.worldToCell(this.level.grid.worldToCell(viewport.minY)), this.minChunkY),
+            maxX: Math.min(this.chunkGrid.worldToCell(this.level.grid.worldToCell(viewport.maxX)), this.maxChunkX - 1),
+            maxY: Math.min(this.chunkGrid.worldToCell(this.level.grid.worldToCell(viewport.maxY)), this.maxChunkY - 1)
         };
     }
 

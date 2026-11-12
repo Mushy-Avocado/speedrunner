@@ -1,12 +1,9 @@
 import { Player } from "./Player";
 
-// Overrides the controls from Player to use replay stream input instead of keyboard
-// TODO: Add a LivePlayer, renamed this one to GhostPlayer. Make Player more basic
-// Potentially add a Character class with simple movement methods
-class PlayerGhost extends Player {
+class GhostPlayer extends Player {
 
-    constructor(replayStream, grid) {
-        super(replayStream.levelData, grid);
+    constructor(replayStream, x, y) {
+        super(replayStream.level, x, y);
         this.replayStream = replayStream;
     }
 
@@ -31,4 +28,4 @@ class PlayerGhost extends Player {
 
 }
 
-export { PlayerGhost };
+export { GhostPlayer };
