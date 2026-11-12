@@ -22,7 +22,6 @@ class GhostPlayer extends Player {
     }
 
     render(ctx) {
-        if (this.replayStream.isFinished) return;
         super.render(ctx);
     }
 
