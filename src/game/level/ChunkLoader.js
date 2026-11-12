@@ -1,99 +1,7 @@
-import tileDataUtil from "../util/tileDataUtil.js";
-import Grid from "./Grid.js";
+import { Grid } from "./Grid.js";
+import { Chunk } from "./Chunk.js";
 
-class ChunkRenderer {
-
-    canvas = document.createElement("canvas");
-    dynamicTiles = [];
-    isDirty = false;
-
-    constructor(chunkX, chunkY, grid, levelData, tileData) {
-        this.chunkX = chunkX;
-        this.chunkY = chunkY;
-        this.startX = chunkX * Chunk.size;
-        this.startY = chunkY * Chunk.size;
-        this.endX = this.startX + Chunk.size;
-        this.endY = this.startY + Chunk.size;
-        this.levelData = levelData;
-        this.tileData = tileData;
-        this.grid = grid;
-        this.canvas.width = grid.size * Chunk.size;
-        this.canvas.height = grid.size * Chunk.size;
-        this.ctx = this.canvas.getContext("2d");
-        this.setDirty();
-    }
-
-    setDirty() {
-        this.isDirty = true;
-    }
-
-    repaint() {
-        this.dynamicTiles.length = 0;
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.save();
-        this.ctx.translate(-this.grid.cellToWorld(this.startX), -this.grid.cellToWorld(this.startY));
-        const width = this.grid.size;
-        const height = this.grid.size;
-        for (let y = this.startY; y < this.endY; y++) {
-            for (let x = this.startX; x < this.endX; x++) {
-                const tile = this.levelData.getTile(x, y);
-                const tileId = tileDataUtil.getId(tile);
-                const tileX = this.grid.cellToWorld(x);
-                const tileY = this.grid.cellToWorld(y);
-                if (tileId !== 0) {
-                    if (!this.tileData[tileId].isAnimated) {
-                        this.tileData[tileId].render(tile, this.ctx, tileX, tileY, width, height);
-                    } else {
-                        this.dynamicTiles.push([tile, tileX, tileY]);
-                    }
-                }
-            }
-        }
-        this.ctx.restore();
-    }
-
-    render(ctx) {
-        if (this.isDirty) {
-            this.repaint();
-            this.isDirty = false;
-        }
-        const originX = this.grid.cellToWorld(this.startX);
-        const originY = this.grid.cellToWorld(this.startY);
-        ctx.drawImage(this.canvas, originX, originY);
-        for (let i = 0; i < this.dynamicTiles.length; i++) {
-            const dynamicTile = this.dynamicTiles[i];
-            const tileId = tileDataUtil.getId(dynamicTile[0]);
-            const tileX = dynamicTile[1];
-            const tileY = dynamicTile[2];
-            this.tileData[tileId].render(dynamicTile[0], ctx, tileX, tileY, this.grid.size, this.grid.size);
-        } 
-    }
-}
-
-class Chunk {
-    static size = 16;
-
-    constructor(chunkX, chunkY, grid, levelData, tileData) {
-        this.renderer = new ChunkRenderer(chunkX, chunkY, grid, levelData, tileData);
-    }
-
-    setDirty() {
-        this.renderer.setDirty();
-    }
-
-    update(tick) {
-
-    }
-
-    render(ctx) {
-        this.renderer.render(ctx);
-    }
-    
-    unload() {
-
-    }
-}
-
+// Loads/unloads chunks
 class ChunkLoader {
 
     chunks = [];
@@ -103,9 +11,9 @@ class ChunkLoader {
     addedChunk = false;
     loadQueue = [];
 
-    // No reasonable need to unload distant chunks right now
-    // They use very little memory
-    unloadDistantChunks = false;
+    // Generally a good idea since chunks have canvases that use significant memory
+    // Larger levels could potentially crash the page
+    unloadDistantChunks = true;
 
     constructor(levelData, tileData, grid) {
         this.levelData = levelData;
@@ -174,7 +82,7 @@ class ChunkLoader {
     setDirty(x, y) {
         const index = this.chunkGrid.worldToCell(x) + this.chunkGrid.worldToCell(y) * this.maxChunkX;
         if (this.chunks[index]) {
-            this.chunks[index].setDirty();
+            this.chunks[index].setDirty(x, y);
         }
     }
     setDirtyAt(index) {
@@ -323,4 +231,4 @@ class ChunkLoader {
 
 }
 
-export default ChunkLoader;
+export { ChunkLoader };

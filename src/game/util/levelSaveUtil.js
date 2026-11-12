@@ -1,7 +1,7 @@
 
 import uint32ArrayUtil from "./uint32ArrayUtil";
 import checksum from "./checksumUtil";
-import LevelData from "../level/LevelData";
+import { LevelData } from "../level/LevelData";
 
 function encodeLevel(levelData) {
     const width = levelData.width;

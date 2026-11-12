@@ -22,4 +22,4 @@ class MainLoop {
 
 }
 
-export default MainLoop;
+export { MainLoop };

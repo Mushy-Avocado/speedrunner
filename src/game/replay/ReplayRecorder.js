@@ -30,4 +30,4 @@ class ReplayRecorder {
     }
 }
 
-export default ReplayRecorder;
+export { ReplayRecorder };

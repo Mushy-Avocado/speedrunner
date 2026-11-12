@@ -6,4 +6,4 @@ class TestClass {
     }
 }
 
-export default TestClass;
+export { TestClass };

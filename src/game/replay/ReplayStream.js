@@ -63,4 +63,4 @@ class ReplayStream {
 
 }
 
-export default ReplayStream;
+export { ReplayStream };

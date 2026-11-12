@@ -64,4 +64,4 @@ class LevelData {
 
 }
 
-export default LevelData;
+export { LevelData };

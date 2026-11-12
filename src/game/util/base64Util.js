@@ -1,7 +1,7 @@
 // Utility functions for converting base64 data
-// KA has a strict CSP for fetch() requests, so .bin files cant be loaded. 
-// <script> files are less strict and allow jsdelivr, so we can store the binary in the form of base64 and convert it
-// The downside is a larger file size. Sad :(
+// KA has a strict CSP for fetch() requests, so .bin files cant be loaded.
+// However base64 is somewhat large in file size. 
+// See file: uint32ArrayUtil.js with RLE and custom base64 encoding.
 const base64Util = {
     // Converts from base64 to a Uint32Array 
     toUint32Array(base64) {

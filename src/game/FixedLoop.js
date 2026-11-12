@@ -33,4 +33,4 @@ class FixedLoop {
     }
 }
 
-export default FixedLoop;
+export { FixedLoop };

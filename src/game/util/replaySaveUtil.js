@@ -1,7 +1,7 @@
 
 import checksum from "./checksumUtil.js";
 import bitstream from "./bitstreamUtil.js";
-import ReplayStream from "../replay/ReplayStream.js";
+import { ReplayStream } from "../replay/ReplayStream.js";
 
 function encodeInput(left, right, up, down) {
     return (left << 3) | (right << 2) | (up << 1) | down;

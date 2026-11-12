@@ -22,4 +22,4 @@ class CanvasDisplay {
 
 }
 
-export default CanvasDisplay;
+export { CanvasDisplay };

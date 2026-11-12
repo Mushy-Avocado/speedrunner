@@ -1,4 +1,4 @@
-import Bounds from "./Bounds.js";
+import { Bounds } from "./Bounds.js";
 
 class Camera {
 
@@ -60,4 +60,4 @@ class Camera {
     }
 }
 
-export default Camera;
+export { Camera };
