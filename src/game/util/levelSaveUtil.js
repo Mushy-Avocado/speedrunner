@@ -1,7 +1,6 @@
 
 import uint32ArrayUtil from "./uint32ArrayUtil";
 import checksum from "./checksumUtil";
-import { LevelData } from "../level/LevelData";
 
 function encodeLevel(levelData) {
     const width = levelData.width;
@@ -12,10 +11,12 @@ function encodeLevel(levelData) {
 
 function decodeLevel(rawData) {
     const [width, tiles] = checksum.verify(rawData).split(";");
-    return LevelData.from(uint32ArrayUtil.decode(tiles, true), parseInt(width, 10));
+    return { tiles: uint32ArrayUtil.decode(tiles, true), width: parseInt(width, 10) };
 }
 
-export default {
-   encode: encodeLevel,
-   decode: decodeLevel,
+const levelSaveUtil = {
+    encode: encodeLevel,
+    decode: decodeLevel,
 };
+
+export default levelSaveUtil;

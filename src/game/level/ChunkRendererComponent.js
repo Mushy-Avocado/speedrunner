@@ -1,25 +1,26 @@
 import tileDataUtil from "../util/tileDataUtil.js";
-import { Chunk } from "./Chunk";
+import { ChunkComponent } from "./ChunkComponent.js";
 
 // Caches rendering of chunk into a single image for performance boost
 // The downside is that redrawing a tile costs more.
 // If a tile changes frequently, mark it as animated to avoid too many updates
-class ChunkRenderer {
+class ChunkRendererComponent  extends ChunkComponent {
 
     canvas = document.createElement("canvas");
     dynamicTiles = [];
     isDirty = false;
 
     constructor(chunkX, chunkY, level) {
+        super();
         this.chunkX = chunkX;
         this.chunkY = chunkY;
-        this.startX = chunkX * Chunk.size;
-        this.startY = chunkY * Chunk.size;
-        this.endX = this.startX + Chunk.size;
-        this.endY = this.startY + Chunk.size;
+        this.startX = chunkX * ChunkComponent.chunkSize;
+        this.startY = chunkY * ChunkComponent.chunkSize;
+        this.endX = this.startX + ChunkComponent.chunkSize;
+        this.endY = this.startY + ChunkComponent.chunkSize;
         this.level = level;
-        this.canvas.width = this.level.grid.size * Chunk.size;
-        this.canvas.height = this.level.grid.size * Chunk.size;
+        this.canvas.width = this.level.grid.size * ChunkComponent.chunkSize;
+        this.canvas.height = this.level.grid.size * ChunkComponent.chunkSize;
         this.ctx = this.canvas.getContext("2d");
         this.setDirty();
     }
@@ -76,4 +77,4 @@ class ChunkRenderer {
     }
 }
 
-export { ChunkRenderer };
+export { ChunkRendererComponent };

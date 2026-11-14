@@ -1,16 +1,16 @@
 
 class LevelData {
 
-    static from(array32, width) {
-        const result = new LevelData(width, array32.length / width);
-        result.data = array32;
+    static fromDecoded({ tiles, width }) {
+        const result = new LevelData(width, tiles.length / width);
+        result.tiles = tiles.slice();
         return result;
     }
 
     constructor(width, height) {
         this.width = width;
         this.height = height;
-        this.data = new Uint32Array(width * height);
+        this.tiles = new Uint32Array(width * height);
     }
 
     getIndex(x, y) {
@@ -23,12 +23,12 @@ class LevelData {
     setTile(x, y, value) {
         this.setTileAt(this.getIndex(x, y), value);
     }
-
+    
     getTileAt(index) {
-        return this.data[index];
+        return this.tiles[index];
     }
     setTileAt(index, value) {
-        this.data[index] = value;
+        this.tiles[index] = value;
     }
 
     deleteTile(x, y) {
@@ -36,7 +36,7 @@ class LevelData {
     }
 
     clone() {
-        return LevelData.from(this.data.slice(), this.width);
+        return LevelData.fromDecoded(this);
     }
 
 }

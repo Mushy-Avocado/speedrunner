@@ -1,5 +1,4 @@
 import { Grid } from "./level/Grid";
-import { ChunkLoader } from "./level/ChunkLoader";
 import { CanvasDisplay } from "./CanvasDisplay";
 import { Camera } from "./Camera";
 import { Keyboard, Mouse } from "./Input";
@@ -14,7 +13,9 @@ import levelSaveUtil from "./util/levelSaveUtil";
 import replaySaveUtil from "./util/replaySaveUtil";
 import { PerformanceMetric } from "./PerformanceMetric";
 import { DebugUI } from "./ui/DebugUI";
-import { Level } from "./level/Level";
+import { ChunkedLevel } from "./level/ChunkedLevel";
+import { FullLevel } from "./level/FullLevel";
+import { LevelData } from "./level/LevelData";
 
 function run() {
 
@@ -30,16 +31,15 @@ function run() {
     const replayCode = "TVVTSFk=;4BBpDGBQkCICAsgQBQQBoCAogQXIEFyBBggQaQIBYBAtAgRQED0HAKCwDQQKQYVoGBgBQMBYDQ8BIFoGAgCQMCIDARAwEoGB0-g4IICGJkYIICGqj4IICMgbjYIICGsi4IICFtiYIICGOh4IICB-x4IICE_B4IICCfR4IICCfh4IICB_x4IICCoCIIICCeR4IICIAeB4IICCtx4IICCdh4IICB9R4IICCoz4IICLAg~8fpr2o";
     
     // Decoded data
-    const levelData = levelSaveUtil.decode(levelCode);
-    const ghostLevelData = levelSaveUtil.decode(levelCode);
+    const decodedLevelData = levelSaveUtil.decode(levelCode);
+    const decodedGhostLevelData = levelSaveUtil.decode(levelCode);
+    const decodedReplayData = replaySaveUtil.decode(replayCode);
     
     // Final data
     const grid = new Grid(30);
-    const level = new Level(levelData, grid, tileTypes);
-    const chunks = new ChunkLoader(level);
-    const ghostLevel = new Level(ghostLevelData, grid, tileTypes);
-    const ghostChunks = new ChunkLoader(ghostLevel);
-    const stream = ReplayStream.fromData(ghostChunks, replaySaveUtil.decode(replayCode));
+    const level = new ChunkedLevel(LevelData.fromDecoded(decodedLevelData), grid, tileTypes);
+    const ghostLevel = new ChunkedLevel(LevelData.fromDecoded(decodedGhostLevelData), grid, tileTypes);
+    const stream = ReplayStream.fromDecoded(decodedReplayData, ghostLevel);
 
     // Rendering
     const canvas = document.getElementsByTagName("canvas")[0];
@@ -79,20 +79,22 @@ function run() {
         if (mouse.buttonDown(0)) {
             const gridX = grid.worldToCell(mouse.x);
             const gridY = grid.worldToCell(mouse.y);
-            levelData.setTile(gridX, gridY, selectedTile);
-            player.replayRecorder.recordTile(levelData.getIndex(gridX, gridY), selectedTile);
-            chunks.setDirty(gridX, gridY);
+            level.setTile(gridX, gridY, selectedTile);
+            player.replayRecorder.recordTile(level.getIndex(gridX, gridY), selectedTile);
         }
         if (keyboard.keyDown("KeyS")) {
             console.log(replaySaveUtil.encode("MUSHY", player.replayRecorder));
         }
 
         // Chunks
-        ghostChunks.update(camera);
-        ghostChunks.render(ctx, camera, 0.4);
-        chunks.update(camera);
-        chunks.render(ctx, camera);
-        mainLoopMetric.timer("Chunks");
+        ghostLevel.update(mainLoop.deltaTime, camera);
+        ctx.save();
+        ctx.globalAlpha = 0.4;
+        ghostLevel.render(ctx, camera);
+        ctx.restore();
+        level.update(mainLoop.deltaTime, camera);
+        level.render(ctx, camera);
+        mainLoopMetric.timer("Level");
 
         // Player
         player.updateControls(keyboard);
@@ -123,6 +125,11 @@ function run() {
         player.fixedUpdate(physicsLoop.deltaTime);
         if (ghost) {
             ghost.fixedUpdate(physicsLoop.deltaTime);
+        }
+
+        level.fixedUpdate(physicsLoop.deltaTime, camera);
+        if (ghost) {
+            ghostLevel.fixedUpdate(physicsLoop.deltaTime, camera);
         }
         
     }
