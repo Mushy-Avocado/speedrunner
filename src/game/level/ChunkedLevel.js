@@ -27,17 +27,17 @@ class ChunkedLevel extends Level {
     }
 
     setTileAt(index, tile) {
-        super.setTileAt(index, tile);
         if (this.getTileAt(index) !== tile) {
             this.chunks.setDirtyAt(index);
         }
+        super.setTileAt(index, tile);
     }
 
     setTile(x, y, tile) {
-        super.setTile(x, y, tile);
         if (this.getTile(x, y) !== tile) {
             this.chunks.setDirty(x, y);
         }
+        super.setTile(x, y, tile);
     }
 
 }
