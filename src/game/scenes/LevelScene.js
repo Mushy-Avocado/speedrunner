@@ -12,12 +12,10 @@ import { Camera } from "../Camera";
 
 class LevelScene extends Scene {
 
-    load(game) {
-        this.fixedUpdateMetric = new PerformanceMetric("Fixed Loop");
-        this.mainLoopMetric = new PerformanceMetric("Main Loop");
+    load() {
+        this.performanceMetric = new PerformanceMetric("Performance");
         this.debugUI = new DebugUI();
-        this.debugUI.addMetric(this.mainLoopMetric);
-        this.debugUI.addMetric(this.fixedUpdateMetric);
+        this.debugUI.addMetric(this.performanceMetric);
         
         this.selectedTile = tileDataUtil.setId(TILE_ID.EMPTY, TILE_ID.GRASS);
         
@@ -29,14 +27,12 @@ class LevelScene extends Scene {
         this.player = playerFactory.live(this.level);
         this.ghost = playerFactory.ghost(this.ghostLevel, window.replays[0]);
         
-        this.camera = new Camera(game.display);
-        this.camera.setCenter(game.display.width / 2, game.display.height / 2);
-        game.mouse.setCamera(this.camera);
-        
-        this.game = game;
+        this.camera = new Camera(this.game.display);
+        this.camera.setCenter(this.game.display.width / 2, this.game.display.height / 2);
+        this.game.mouse.setCamera(this.camera);
     }
 
-    render(ctx) {
+    render(ctx, alpha) {
         ctx.save();
         this.camera.applyTransform();
 
@@ -44,14 +40,14 @@ class LevelScene extends Scene {
             ctx.save();
             ctx.globalAlpha = 0.4;
             this.ghostLevel.render(ctx, this.camera);
-            this.ghost.render(ctx);
+            this.ghost.render(ctx, alpha);
             ctx.restore();
-            this.mainLoopMetric.timer("Replay render");
+            this.performanceMetric.timer("Replay render");
         }
         
         this.level.render(ctx, this.camera);
-        this.player.render(ctx);
-        this.mainLoopMetric.timer("Live render");
+        this.player.render(ctx, alpha);
+        this.performanceMetric.timer("Live render");
 
         ctx.restore();
 
@@ -59,18 +55,10 @@ class LevelScene extends Scene {
     }
 
     update(deltaTime) {
-        this.mainLoopMetric.startFrame();
+        this.performanceMetric.startFrame();
 
-        this.level.update(deltaTime, this.camera);
-        this.ghostLevel.update(deltaTime, this.camera);
-        this.mainLoopMetric.timer("Level update");
-
+        this.ghost.updateControls();
         this.player.updateControls(this.game.keyboard);
-        if (this.ghost) {
-            this.ghost.updateControls();
-        }
-        this.mainLoopMetric.timer("Player update");
-
         if (this.game.mouse.buttonDown(0)) {
             const gridX = this.level.grid.worldToCell(this.game.mouse.x);
             const gridY = this.level.grid.worldToCell(this.game.mouse.y);
@@ -81,23 +69,34 @@ class LevelScene extends Scene {
             console.log(replaySaveUtil.encode("MUSHY", this.player.replayRecorder));
         }
 
+        this.performanceMetric.timer("Input");
+
+        this.level.update(deltaTime, this.camera);
+        this.ghostLevel.update(deltaTime, this.camera);
+        this.performanceMetric.timer("Level update");
+
+        this.player.update(deltaTime);
+        this.performanceMetric.timer("Player update");
+        if (this.ghost) {
+            this.ghost.update(deltaTime);
+        }
+        this.performanceMetric.timer("Replay update");
+
     }
 
     fixedUpdate(deltaTime) {
 
-        this.fixedUpdateMetric.startFrame();
-
         this.player.fixedUpdate(deltaTime);
+        this.level.fixedUpdate(deltaTime, this.camera);
+        
+        this.performanceMetric.timer("Live fixed update");
+        
         if (this.ghost) {
             this.ghost.fixedUpdate(deltaTime);
+            this.ghostLevel.fixedUpdate(deltaTime, this.camera);
+            this.performanceMetric.timer("Replay fixed update");
         }
 
-        this.fixedUpdateMetric.timer("Player fixed update");
-
-        this.level.fixedUpdate(deltaTime, this.camera);
-        this.ghostLevel.fixedUpdate(deltaTime, this.camera);
-
-        this.fixedUpdateMetric.timer("Level fixed update");
 
     }
 

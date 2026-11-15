@@ -7,13 +7,14 @@ class MainLoop {
         this.callback = callback;
     }
 
-    start() {
-        this.frame = requestAnimationFrame(() => {
-            this.start();
+    start(timestamp = null) {
+        this.frame = requestAnimationFrame(timestamp => {
+            this.start(timestamp);
         });
-        this.deltaTime = (performance.now() - this.previousFrameTime) / 1000;
-        this.previousFrameTime = performance.now();
-        this.callback();
+        if (timestamp === null) return;
+        this.deltaTime = (timestamp - this.previousFrameTime) / 1000;
+        this.previousFrameTime = timestamp;
+        this.callback(timestamp);
     }
 
     stop() {

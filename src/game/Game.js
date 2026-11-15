@@ -1,62 +1,74 @@
-import { SceneManager } from './scenes/SceneManager';
+
 import { MainLoop } from './MainLoop';
-import { FixedLoop } from './FixedLoop';
+import { FixedIntervalCallback } from './FixedIntervalCallback';
 import { CanvasDisplay } from './CanvasDisplay';
 import { Keyboard, Mouse } from './Input';
 
-class Game extends SceneManager {
+class Game {
 
     constructor(scenes) {
-        super(scenes);
+        this.scenes = scenes;
+        this.currentScene = null;
         this.canvas = document.getElementsByTagName("canvas")[0];
         this.display = new CanvasDisplay(this.canvas, 600, 400);
         this.keyboard = new Keyboard();
         this.mouse = new Mouse(this.canvas);
         this.ctx = this.display.ctx;
         this.display.updateSize();
-        this.mainLoop = new MainLoop(() => {
-            if (this.isPaused) this.mainLoop.deltaTime = 0;
+        this.mainLoop = new MainLoop(timestamp => {
             this.display.updateSize();
-            this.update(this.mainLoop.deltaTime);
             this.ctx.save();
             this.display.applyScaling();
             this.ctx.fillStyle = "#264d8e";
             this.ctx.fillRect(0, 0, this.display.width, this.display.height);
-            this.render(this.ctx);
+            this.update(this.mainLoop.deltaTime);
+            this.fixedLoop.update(timestamp);
+            const alpha = Math.min(Math.max(this.fixedLoop.accumulatedFrameDebt / this.fixedLoop.deltaTime, 0), 1);
+            this.render(this.ctx, alpha);
             this.ctx.restore();
             this.keyboard.endFrame();
             this.mouse.endFrame();
         });
-        this.fixedLoop = new FixedLoop(() => {
+        this.fixedLoop = new FixedIntervalCallback(() => {
             this.fixedUpdate(this.fixedLoop.deltaTime);
         });
-        this.isPaused = false;
+    }
+    
+    load(newScene) {
+        this.mouse.setCamera(null);
+        if (this.currentScene) {
+            this.currentScene.unload();
+        }
+        this.currentScene = this.scenes[newScene];
+        this.currentScene.game = this;
+        this.currentScene?.load();
     }
 
-    load(sceneName) {
-        this.mouse.setCamera(null);
-        super.load(sceneName);
+    update(deltaTime) {
+        if (this.currentScene) {
+            this.currentScene.update(deltaTime);
+        }
+    }
+
+    fixedUpdate(deltaTime) {
+        if (this.currentScene) {
+            this.currentScene.fixedUpdate(deltaTime);
+        }
+    }
+
+    render(ctx, alpha) {
+        if (this.currentScene) {
+            this.currentScene.render(ctx, alpha);
+        }
     }
 
     start(sceneName) {
         this.load(sceneName);
         this.mainLoop.start();
-        this.fixedLoop.start();
     }
 
     stop() {
         this.mainLoop.stop();
-        this.fixedLoop.stop();
-    }
-
-    pause() {
-        this.isPaused = true;
-        this.fixedLoop.stop();
-    }
-
-    resume() {
-        this.isPaused = false;
-        this.fixedLoop.start();
     }
 
 }

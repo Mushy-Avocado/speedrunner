@@ -16,13 +16,9 @@ class GhostPlayer extends Player {
     }
 
     fixedUpdate(deltaTime) {
-        if (this.replayStream.isFinished) return;
         super.fixedUpdate(deltaTime);
+        if (this.replayStream.isFinished) return;
         this.replayStream.fixedUpdate();
-    }
-
-    render(ctx) {
-        super.render(ctx);
     }
 
 }
