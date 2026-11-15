@@ -31,7 +31,7 @@ class DebugUI {
             offset += width;
             ctx.fillText(timerNames[i] + ": " + metric.timers.get(timerNames[i]).toFixed(3) + "ms", this.x, i * 7 + this.y + this.offsetY + 22);
         }
-        this.offsetY += 40;
+        this.offsetY += 60;
     }
 
     render(ctx) {
