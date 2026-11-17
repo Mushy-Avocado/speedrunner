@@ -2,6 +2,7 @@ import { Scene } from "./Scene";
 import { validateReplay } from "../speedrun/validateReplay";
 import { Grid } from "../level/Grid";
 import dateUtil from "../util/dateUtil";
+import { canFullscreen, fullscreen } from "../fullscreen";
 
 class MainMenuScene extends Scene {
 
@@ -21,6 +22,13 @@ class MainMenuScene extends Scene {
         sceneUI.events.listen("play", () => {
             this.game.load("level");
         });
+        sceneUI.events.listen("fullscreen", () => {
+            fullscreen();
+        });
+        if (!canFullscreen()) {
+            const fullscreenButton = document.querySelector('button[data-action="fullscreen"]');
+            fullscreenButton.style.display = "none";
+        }
     }
 
     render(ctx, alpha) {

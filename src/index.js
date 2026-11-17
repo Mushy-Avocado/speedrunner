@@ -2,6 +2,7 @@
 
 // Tell webpack to use the style sheet
 // No inclusion inside the HTML file itself
+import "./style.css";
 import { run } from "./game/run";
 
 // Main entry point for webpack
