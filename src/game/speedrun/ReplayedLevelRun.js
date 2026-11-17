@@ -1,12 +1,12 @@
 import { LevelRun } from "./LevelRun";
 import { ReplayStream } from "./ReplayStream";
 import { replayInput } from "./replayInput";
-import { replaySaveUtil } from "./replaySaveUtil";
+import replaySaveUtil from "../util/replaySaveUtil";
 
 class ReplayedLevelRun extends LevelRun {
 
-    constructor(replay, display, completeCallback = () => {}, failCallback = () => {}) {
-        super(display, completeCallback, failCallback);
+    constructor(replay, display) {
+        super(display);
         this.replay = replay;
     }
 
@@ -24,13 +24,14 @@ class ReplayedLevelRun extends LevelRun {
     fixedUpdate(deltaTime) {
         this.stream.fixedUpdate(this.currentLevel);
         super.fixedUpdate(deltaTime);
+        this.fixedDelta = deltaTime;
         if (this.stream.isFinished && !this.isComplete && Math.abs(this.player.velocityX) + Math.abs(this.player.velocityY) < 50) {
-            this.failCallback(false);
+            throw new Error("Player did not reach the goal.");
         }
     }
 
     getSave() {
-        return true;
+        return this.stream.totalFrames * 1000 * this.fixedDelta;
     }
 
 }

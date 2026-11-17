@@ -1,5 +1,5 @@
 
-const levels = [
+const levelCodes = [
     {
         name: "Level1",
         code: "30;AAAAAAAAAR0ABAAAAAAAAQAAAAAAAAAJAAwAAAAAAAEAAAAAAAAABAAEAAAAAAAeAAgAAAAAAQ4~truoly~xrxzzf",
@@ -10,4 +10,4 @@ const levels = [
     },
 ];
 
-export { levels };
+export { levelCodes };

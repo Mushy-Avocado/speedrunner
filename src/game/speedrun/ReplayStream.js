@@ -20,6 +20,7 @@ class ReplayStream {
         this.durations = durations;
         this.tileChanges = tileChanges;
         this.username = username;
+        this.estimatedDuration = durations.reduce((a, b) => a + b, 0);
     }
 
     getInput() {
@@ -27,10 +28,6 @@ class ReplayStream {
             return [false, false, false, false];
         }
         return this.inputs[this.currentInputIndex];
-    }
-
-    getUsername() {
-        return this.username;
     }
 
     get isFinished() {

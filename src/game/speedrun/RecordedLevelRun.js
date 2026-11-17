@@ -1,14 +1,15 @@
 
-import { LevelRun } from "../level/LevelRun";
+import { LevelRun } from "./LevelRun";
 import { ReplayRecorder } from "./ReplayRecorder";
 import { keyboardInput } from "./keyboardInput";
+import replaySaveUtil from "../util/replaySaveUtil";
 
 class RecordedLevelRun extends LevelRun {
 
     recorder = new ReplayRecorder();
 
-    constructor(keyboard, display, completeCallback = () => {}, failCallback = () => {}) {
-        super(display, completeCallback, failCallback);
+    constructor(keyboard, display) {
+        super(display);
         this.applyKeyboardInput = keyboardInput(keyboard);
     }
 

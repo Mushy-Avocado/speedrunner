@@ -39,4 +39,4 @@ class FixedIntervalCallback {
     }
 }
 
-export { FixedIntervalCallback };
+export { FixedIntervalCallback, FIXED_DELTA_TIME };

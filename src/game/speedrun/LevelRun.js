@@ -1,3 +1,9 @@
+import { Camera } from "../Camera";
+import { Player } from "../entity/Player";
+import { LevelData } from "../level/LevelData";
+import { ChunkedLevel } from "../level/ChunkedLevel";
+import { createTileBehavior } from "../data/tileBehavior";
+import levelSaveUtil from "../util/levelSaveUtil";
 
 class LevelRun {
 
@@ -10,10 +16,8 @@ class LevelRun {
         return this.levels[this.levelIndex];
     }
 
-    constructor(display, completeCallback, failCallback) {
+    constructor(display) {
         this.camera = new Camera(display);
-        this.completeCallback = completeCallback;
-        this.failCallback = failCallback;
     }
 
     getSave() {
@@ -31,7 +35,6 @@ class LevelRun {
                 } else {
                     this.levelIndex--;
                     this.output = this.getSave();
-                    this.completeCallback(this.output);
                     this.isComplete = true;
                 }
             }
@@ -70,3 +73,5 @@ class LevelRun {
     }
 
 }
+
+export { LevelRun };

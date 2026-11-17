@@ -1,10 +1,11 @@
-class CanvasDisplay {
+import { Display } from "./Display";
+
+class CanvasDisplay extends Display {
 
     constructor(canvas, width, height) {
+        super(width, height);
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
-        this.width = width;
-        this.height = height;
     }
 
     updateSize() {

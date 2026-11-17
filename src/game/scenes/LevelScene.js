@@ -4,7 +4,7 @@ import { DebugUI } from '../ui/DebugUI';
 import { Grid } from "../level/Grid";
 
 // Data
-import { levels as levelCodes } from '../data/levels';
+import { levelCodes } from '../data/levelCodes';
 import { TILE_ID } from "../data/tileBehavior";
 
 // Util
@@ -21,18 +21,8 @@ class LevelScene extends Scene {
 
     createSession() {
 
-        const recorder = new RecordedLevelRun(this.game.keyboard, this.game.display, code => {
-            const ms = recorder.recorder.frameCount * this.game.fixedLoop.deltaTime * 1000;
-            console.log(dateUtil.formatMs(ms));
-            console.log(code);
-        });
-        const playback = new ReplayedLevelRun("TVVTSFk=;LApEmHBNBWHR0CEoBAZGwA~1qmhtfe", this.game.display, () => {
-            const ms = playback.stream.totalFrames * this.game.fixedLoop.deltaTime * 1000;
-            console.log(dateUtil.formatMs(ms));
-            speedrun.playback = null;
-        }, () => {
-            console.log("Speedrun invalid");
-        });
+        const recorder = new RecordedLevelRun(this.game.keyboard, this.game.display);
+        const playback = new ReplayedLevelRun("TVVTSFk=;LApEmHBNBWHR0CEoBAZGwA~1qmhtfe", this.game.display);
         const speedrun = new Speedrun(recorder, playback);
         speedrun.loadLevels(levelCodes, new Grid(30));
 
