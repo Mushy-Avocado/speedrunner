@@ -3,11 +3,13 @@ import { MainLoop } from './MainLoop';
 import { FixedIntervalCallback } from './FixedIntervalCallback';
 import { CanvasDisplay } from './CanvasDisplay';
 import { Keyboard, Mouse } from './Input';
+import { UIManager } from "./ui/UIManager";
 
 class Game {
 
     keyboard = new Keyboard();
     currentScene = null;
+    ui = new UIManager();
 
     constructor(scenes) {
         this.scenes = scenes;
@@ -28,6 +30,7 @@ class Game {
             this.display.updateSize();
             this.ctx.save();
             this.display.applyScaling();
+            this.ui.applyScaling(this.display);
 
             // Background
             this.ctx.fillStyle = "#264d8e";
@@ -55,6 +58,7 @@ class Game {
             this.currentScene.unload();
         }
         this.currentScene = this.scenes[newScene];
+        this.ui.openScene(newScene);
         if (this.currentScene) {
             this.currentScene.game = this;
             this.currentScene.load(data);

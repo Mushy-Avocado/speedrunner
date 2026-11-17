@@ -3,9 +3,45 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geo:ital@0;1&display=swap" rel="stylesheet">
 	<title>Speedrunner</title>
 </head>
 <body id="wrapper">
+    <div id="ui">
+        <div class="scene-menu" data-scene="mainMenu">
+            <h1 class="game-title">Speedrunner Game</h1>
+            <button data-action="play"><span class="material-icons">play_arrow</span>Play</button>
+            <button data-mode="open" data-action="settings"><span class="material-icons">settings</span>Settings</button>
+            <button data-mode="open" data-action="tools"><span class="material-icons">build</span>Tools</button>
+            <div data-modal="settings">
+                <h3>Settings</h3>
+                <p>
+                    Settings will go here
+                </p>
+                <button data-mode="close" data-action="settings">Save</button>
+            </div>
+            <div data-modal="tools">
+                <h3>Tools</h3>
+                <button data-mode="open" data-action="validate-replay">Validate replay</button> 
+                <button data-mode="close" data-action="tools">Done</button>
+            </div>
+            <div data-modal="validate-replay" class="dialogue">
+                <h3>Validate replay</h3>
+                <p>Scans the replay for corruption and makes sure the replay reaches the goal. Outputs the time of the replay, down to the millisecond.</p>
+                <input type="text" data-input="replay-validation-data" placeholder="Paste replay data here">
+                <button data-action="start-validate-replay">Validate</button>
+                <hr>
+                <label>Validation progress: <span data-output="replay-validation-percent">0</span>%&nbsp;&nbsp;&nbsp;</label>
+                <progress style="width: 60px;" max="1" min="0" value="0" data-output="replay-validation-progress"></progress>
+                <p style="white-space: pre-line;" data-output="replay-validation-result"></p>
+                <button data-mode="close" data-action="validate-replay">Done</button>
+            </div>
+        </div>
+    </div>
     <!-- IMPORTANT: Dont link index.js or style.css here. Webpack handles that -->
     <canvas class="sketch"></canvas>
 </body>

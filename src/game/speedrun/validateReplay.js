@@ -11,14 +11,14 @@ function validateReplay(replay, display, levelCodes, grid) {
             return playback.stream.totalFrames / playback.stream.estimatedDuration;
         },
         get username() {
-            return playback?.stream.username ?? "Unknown User";
+            return playback?.stream?.username ?? "Unknown User";
         },
         promise: new Promise((resolve, reject) => {
             playback = new ReplayedLevelRun(replay, display);
             playback.loadLevels(levelCodes, grid);
             const update = () => {
                 try {
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 5; i++) {
                         playback.update(0);
                         playback.fixedUpdate(FIXED_DELTA_TIME);
                         if (playback.output !== null) {

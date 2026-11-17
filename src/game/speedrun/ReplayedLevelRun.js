@@ -2,6 +2,7 @@ import { LevelRun } from "./LevelRun";
 import { ReplayStream } from "./ReplayStream";
 import { replayInput } from "./replayInput";
 import replaySaveUtil from "../util/replaySaveUtil";
+import { FIXED_DELTA_TIME } from "../FixedIntervalCallback";
 
 class ReplayedLevelRun extends LevelRun {
 
@@ -24,14 +25,13 @@ class ReplayedLevelRun extends LevelRun {
     fixedUpdate(deltaTime) {
         this.stream.fixedUpdate(this.currentLevel);
         super.fixedUpdate(deltaTime);
-        this.fixedDelta = deltaTime;
         if (this.stream.isFinished && !this.isComplete && Math.abs(this.player.velocityX) + Math.abs(this.player.velocityY) < 50) {
             throw new Error("Player did not reach the goal.");
         }
     }
 
     getSave() {
-        return this.stream.totalFrames * 1000 * this.fixedDelta;
+        return this.stream.totalFrames * 1000 * FIXED_DELTA_TIME;
     }
 
 }

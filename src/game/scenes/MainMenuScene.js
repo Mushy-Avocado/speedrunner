@@ -6,33 +6,27 @@ import dateUtil from "../util/dateUtil";
 class MainMenuScene extends Scene {
 
     load(data) {
-        const replay = data.replay;
-        const levelCodes = data.levelCodes;
-        this.validateTask = validateReplay(replay, this.game.display, levelCodes, new Grid(30));
-        this.validateTask.promise.then(ms => {
-            this.result = "valid";
-            this.time = ms;
-        }).catch(e => {
-            this.result = "invalid";
-            this.reason = e.message;
+        const sceneUI = this.game.ui.sceneUI;
+        this.sceneUI = sceneUI;
+        sceneUI.events.listen("start-validate-replay", () => {
+            const replay = sceneUI.data.getInput("replay-validation-data");
+            const levelCodes = data.levelCodes;
+            this.validateTask = validateReplay(replay, this.game.display, levelCodes, new Grid(30));
+            this.validateTask.promise.then(ms => {
+                sceneUI.data.setOutput("replay-validation-result", `Replay by ${this.validateTask.username} is valid.\r\nTime: ${dateUtil.formatMs(ms)}`);
+            }).catch(e => {
+                sceneUI.data.setOutput("replay-validation-result", `Replay by ${this.validateTask.username} is invalid.\r\nReason: ` + e.message);
+            });
+        });
+        sceneUI.events.listen("play", () => {
+            this.game.load("level");
         });
     }
 
     render(ctx, alpha) {
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, this.game.display.width * this.validateTask.progress, this.game.display.height);
-
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        if (!this.result) {
-            ctx.fillText(`Validating replay... ${Math.floor(this.validateTask.progress * 100)}%`, 20, 40);
-        } else {
-            ctx.fillText(`Replay by ${this.validateTask.username} is ${this.result}`, 20, 40);
-            if (this.result === "valid") {
-                ctx.fillText(`Time: ${dateUtil.formatMs(this.time)}`, 20, 70);
-            } else {
-                ctx.fillText(`Reason: ${this.reason}`, 20, 70);
-            }
+        if (this.validateTask) {
+            this.sceneUI.data.setOutput("replay-validation-percent", Math.floor(this.validateTask.progress * 100));
+            this.sceneUI.data.setOutput("replay-validation-progress", this.validateTask.progress);
         }
     }
 

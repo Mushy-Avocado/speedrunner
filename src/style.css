@@ -1,5 +1,12 @@
 :root {
     --background-color: #000000;
+    --large-font: Verdana, Geneva, Tahoma, sans-serif;
+    --small-font: "Roboto";
+    --light-color: #FFD166;
+    --light-accent-color: #CC8F00;
+    --dark-color: #341526;
+    --dark-accent-color: #922D50;
+    --background-accent: white;
 }
 
 
@@ -26,12 +33,121 @@ canvas:focus {
     outline: none;
 }
 
-/* Automatically fits to the remaining height and centers the canvas it contains */
 #wrapper {
-    padding: 0px;
-    margin: 0px;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+}
+
+.ui-closed {
+    display: none !important;
+}
+
+.ui-open {
+    display: block !important;
+}
+
+dialog {
+    width: 350px;
+    height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: var(--background-accent);
+    border-color: var(--dark-accent-color);
+    border-radius: 0px;
+    border-width: 3px;
+    border-style: solid;
+
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        overlay 0.3s ease allow-discrete,
+        display 0.3s ease allow-discrete;
+}
+
+dialog[open] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+@starting-style {
+    dialog[open] {
+        opacity: 0;
+        transform: translateY(16px) scale(0.95);
+    }
+}
+
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.4); /* 0.7 = 70% dark opacity */
+    backdrop-filter: blur(2px);
+}
+
+.scene-menu {
+    padding: 20px;
+    padding-top: 50px;
+}
+
+h3 {
+    font-family: var(--large-font);
+    color: var(--dark-accent-color);
+}
+
+.game-title {
+    font-family: "Geo", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--light-color);
+}
+
+p, input, label {
+    font-family: var(--small-font);
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+input, progress {
+    min-width: 120px;
+    height: 20px;
+    border-radius: 0px;
+}
+
+progress::-webkit-progress-value {
+    border-radius: 0px;
+    background-color: var(--dark-color);
+}
+
+progress::-webkit-progress-bar {
+    border-radius: 0px;
+    background-color: var(--dark-accent-color);
+}
+
+button {
+    background-color: var(--light-color);
+    border-color: var(--light-accent-color);
+    color: var(--dark-accent-color);
+    border-width: 3px;
+    border-radius: 0px;
+    border-style: solid;
+    height: 30px;
+    min-width: 120px;
+    font-family: var(--small-font);
+    text-align: center;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition-duration: 0.2s;
+    transition-property: all;
+    transition-timing-function: ease-in-out;
+}
+
+button:hover {
+    border-color: var(--light-color);
+    background-color: var(--light-accent-color);
+    box-shadow: 0px 3px 5px var(--light-accent-color);
 }

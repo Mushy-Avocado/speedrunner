@@ -15,6 +15,9 @@ class CanvasDisplay extends Display {
         this.scale = Math.floor(rawScale * 10) / 10;
         this.canvas.width = Math.round(this.width * this.scale);
         this.canvas.height = Math.round(this.height * this.scale);
+        const bounds = this.canvas.getBoundingClientRect();
+        this.x = bounds.left;
+        this.y = bounds.top;
     }
 
     applyScaling() {
