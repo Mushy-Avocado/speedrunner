@@ -52,11 +52,11 @@ class Camera {
         };
     }
 
-    applyTransform() {
+    applyTransform(ctx) {
         const cx = this.display.width / 2;
         const cy = this.display.height / 2;
-        this.display.ctx.scale(this.zoom, this.zoom);
-        this.display.ctx.translate(Math.floor(cx / this.zoom - this.centerX), Math.floor(cy / this.zoom - this.centerY));
+        ctx.scale(this.zoom, this.zoom);
+        ctx.translate(Math.floor(cx / this.zoom - this.centerX), Math.floor(cy / this.zoom - this.centerY));
     }
 }
 

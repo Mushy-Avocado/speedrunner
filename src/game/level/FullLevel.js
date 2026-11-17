@@ -3,8 +3,8 @@ import { Level } from "./Level.js";
 
 class FullLevel extends Level {
 
-    constructor(levelData, grid, tileTypes) {
-        super(levelData, grid, tileTypes);
+    constructor(levelData, grid, tileBehavior) {
+        super(levelData, grid, tileBehavior);
     }
 
     update(deltaTime, camera) {

@@ -7,9 +7,11 @@ class ReplayRecorder {
     currentInput = 0;
     currentInputTimestamp = 0;
     frameCount = 0;
+    isFinished = false;
 
-    setInput(left, right, up, down) {
-        const newInput = replaySaveUtil.encodeInput(left, right, up, down);
+    updateInput(input) {
+        if (this.isFinished) return;
+        const newInput = replaySaveUtil.encodeInput(input.left, input.right, input.up, input.down);
         if (newInput !== this.currentInput) {
             const duration = this.frameCount - this.currentInputTimestamp;
             if (duration > 0) {
@@ -22,11 +24,25 @@ class ReplayRecorder {
     }
 
     recordTile(index, newTile) {
+        if (this.isFinished) return;
         this.tileChanges.push([index, newTile, this.frameCount]);
     }
 
     fixedUpdate() {
+        if (this.isFinished) return;
         this.frameCount++;
+    }
+
+    finish(finalFrameCount = this.frameCount) {
+        if (this.isFinished) return;
+
+        const duration = finalFrameCount - this.currentInputTimestamp;
+        if (duration > 0) {
+            this.inputs.push(this.currentInput);
+            this.durations.push(duration);
+        }
+        this.frameCount = finalFrameCount;
+        this.isFinished = true;
     }
 }
 

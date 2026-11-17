@@ -7,13 +7,21 @@ class Player extends Character {
         this.previousY = y;
     }
 
-    update(deltaTime) {}
+    update() {
+
+    }
+
+    getRenderPosition(alpha) {
+        return {
+            x: this.previousX + (this.x - this.previousX) * alpha,
+            y: this.previousY + (this.y - this.previousY) * alpha
+        };
+    }
     
     render(ctx, alpha) {
-        const renderX = this.previousX + (this.x - this.previousX) * alpha;
-        const renderY = this.previousY + (this.y - this.previousY) * alpha;
+        const { x, y } = this.getRenderPosition(alpha);
         ctx.fillStyle = "gray";
-        ctx.fillRect(renderX, renderY, this.width, this.height);
+        ctx.fillRect(x, y, this.width, this.height);
     }
 
     fixedUpdate(deltaTime) {
@@ -21,8 +29,6 @@ class Player extends Character {
         this.previousY = this.y;
         super.fixedUpdate(deltaTime);
     }
-
-    updateControls(keyboard) {}
 
 }
 

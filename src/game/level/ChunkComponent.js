@@ -5,6 +5,7 @@ class ChunkComponent {
 
     render(ctx) {}
     update(deltaTime) {}
+    unload() {}
     fixedUpdate(deltaTime) {}
     setDirty(x, y) {}
 

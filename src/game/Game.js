@@ -6,42 +6,59 @@ import { Keyboard, Mouse } from './Input';
 
 class Game {
 
+    keyboard = new Keyboard();
+    currentScene = null;
+
     constructor(scenes) {
         this.scenes = scenes;
-        this.currentScene = null;
+
         this.canvas = document.getElementsByTagName("canvas")[0];
         this.display = new CanvasDisplay(this.canvas, 600, 400);
-        this.keyboard = new Keyboard();
         this.mouse = new Mouse(this.canvas);
         this.ctx = this.display.ctx;
         this.display.updateSize();
+        
+        // Updates inside the main loop at a fixed interval
+        this.fixedLoop = new FixedIntervalCallback(() => {
+            this.fixedUpdate(this.fixedLoop.deltaTime);
+        });
+
+        // Updates at the monitor refresh rate
         this.mainLoop = new MainLoop(timestamp => {
             this.display.updateSize();
             this.ctx.save();
             this.display.applyScaling();
+
+            // Background
             this.ctx.fillStyle = "#264d8e";
             this.ctx.fillRect(0, 0, this.display.width, this.display.height);
-            this.update(this.mainLoop.deltaTime);
+
+            // Update (usually for input handling)
+            this.update(this.mainLoop.deltaTime); 
+
+            // Fixed update (usually for physics)
             this.fixedLoop.update(timestamp);
+
+            // Rendering (calculate alpha value for smoothing)
             const alpha = Math.min(Math.max(this.fixedLoop.accumulatedFrameDebt / this.fixedLoop.deltaTime, 0), 1);
             this.render(this.ctx, alpha);
+
             this.ctx.restore();
             this.keyboard.endFrame();
             this.mouse.endFrame();
         });
-        this.fixedLoop = new FixedIntervalCallback(() => {
-            this.fixedUpdate(this.fixedLoop.deltaTime);
-        });
     }
     
-    load(newScene) {
+    load(newScene, data) {
         this.mouse.setCamera(null);
         if (this.currentScene) {
             this.currentScene.unload();
         }
         this.currentScene = this.scenes[newScene];
-        this.currentScene.game = this;
-        this.currentScene?.load();
+        if (this.currentScene) {
+            this.currentScene.game = this;
+            this.currentScene.load(data);
+        }
     }
 
     update(deltaTime) {
@@ -62,8 +79,8 @@ class Game {
         }
     }
 
-    start(sceneName) {
-        this.load(sceneName);
+    start(sceneName, data) {
+        this.load(sceneName, data);
         this.mainLoop.start();
     }
 

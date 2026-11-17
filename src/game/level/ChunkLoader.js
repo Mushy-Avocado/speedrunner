@@ -71,8 +71,12 @@ class ChunkLoader {
 
     unload(x, y) {
         const index = x + y * this.maxChunkX;
-        this.chunks[index]?.unload();
-        delete this.chunks[index];
+        if (this.chunks[index]) {
+            for (let component of this.chunks[index]) {
+                component.unload();
+            };
+            delete this.chunks[index];
+        }
     }
 
 

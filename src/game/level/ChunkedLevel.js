@@ -5,8 +5,8 @@ import { ChunkLoader } from "./ChunkLoader.js";
 
 class ChunkedLevel extends Level {
     
-    constructor(levelData, grid, tileTypes) {
-        super(levelData, grid, tileTypes);
+    constructor(levelData, grid, tileBehavior) {
+        super(levelData, grid, tileBehavior);
         this.chunks = new ChunkLoader(grid, levelData.width, levelData.height, (chunkX, chunkY) => {
             return [
                 new ChunkRendererComponent(chunkX, chunkY, this),

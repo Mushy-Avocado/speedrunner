@@ -4,17 +4,17 @@ import tileDataUtil from "../util/tileDataUtil.js";
 // Easier to pass around and guarantees that the data stays together
 class Level {
 
-    constructor(levelData, grid, tileTypes) {
+    constructor(levelData, grid, tileBehavior) {
         this.data = levelData;
         this.grid = grid;
-        this.tileTypes = tileTypes; 
+        this.tileBehavior = tileBehavior; 
         this.width = levelData.width;
         this.height = levelData.height;
     }
 
     getTileType(x, y) {
         const tile = this.data.getTile(x, y);
-        return this.tileTypes[tileDataUtil.getId(tile)];
+        return this.tileBehavior[tileDataUtil.getId(tile)];
     }
 
 

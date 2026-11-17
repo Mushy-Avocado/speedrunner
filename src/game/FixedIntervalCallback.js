@@ -1,14 +1,22 @@
+
+// DO NOT CHANGE once in production
+// Replay data relies on the same value to reproduce the same results
+const FIXED_DELTA_TIME = 1 / 30;
+
 class FixedIntervalCallback {
-    deltaTime = 1 / 30;
-    maxFrameTime = 0.25;
-    maxUpdates = 5;
+    deltaTime = FIXED_DELTA_TIME;
     previousFrameTime = performance.now();
     accumulatedFrameDebt = 0;
+
+    // Makes sure physics dont run for too long
+    maxFrameTime = 0.25;
+    maxUpdates = 5;
 
     constructor(callback) {
         this.callback = callback;
     }
 
+    // Returns true if the maximum number of updates was reached, usually caused by lag
     update(timestamp) {
         const currentTime = timestamp;
         const elapsed = (currentTime - this.previousFrameTime) / 1000;

@@ -4,7 +4,7 @@ import checksum from "./checksumUtil";
 
 function encodeLevel(levelData) {
     const width = levelData.width;
-    const tiles = uint32ArrayUtil.encode(levelData.data, true);
+    const tiles = uint32ArrayUtil.encode(levelData.tiles, true);
 
     return checksum.add(width + ";" + tiles);
 }

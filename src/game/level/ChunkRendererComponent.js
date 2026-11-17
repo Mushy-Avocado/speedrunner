@@ -4,7 +4,7 @@ import { ChunkComponent } from "./ChunkComponent.js";
 // Caches rendering of chunk into a single image for performance boost
 // The downside is that redrawing a tile costs more.
 // If a tile changes frequently, mark it as animated to avoid too many updates
-class ChunkRendererComponent  extends ChunkComponent {
+class ChunkRendererComponent extends ChunkComponent {
 
     canvas = document.createElement("canvas");
     dynamicTiles = [];
@@ -72,7 +72,7 @@ class ChunkRendererComponent  extends ChunkComponent {
             const tileId = tileDataUtil.getId(dynamicTile[0]);
             const tileX = dynamicTile[1];
             const tileY = dynamicTile[2];
-            this.level.tileTypes[tileId].render(dynamicTile[0], ctx, tileX, tileY, this.level.grid.size, this.level.grid.size);
+            this.level.tileBehavior[tileId].render(dynamicTile[0], ctx, tileX, tileY, this.level.grid.size, this.level.grid.size);
         } 
     }
 }

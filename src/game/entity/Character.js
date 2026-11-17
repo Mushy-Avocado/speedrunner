@@ -1,9 +1,11 @@
 import { SimpleBody } from "./SimpleBody";
+import { CharacterInput } from "./CharacterInput";
 
 class Character extends SimpleBody {
     constructor(level, x, y, width, height) {
         super(x, y, width, height);
         this.level = level;
+        this.input = new CharacterInput();
     }
 
     isMovingLeft = false;
@@ -11,6 +13,8 @@ class Character extends SimpleBody {
     isQueuedJumping = false;
 
     fixedUpdate(deltaTime) {
+        this.input.applyCharacter(this);
+
         if (this.isMovingLeft) {
             this.velocityX -= 2000 * deltaTime;
         }
@@ -25,7 +29,7 @@ class Character extends SimpleBody {
             this.isQueuedJumping = false;
             this.velocityY = -400;
         }
-        super.fixedUpdate(deltaTime, this.level.data, this.level.grid);
+        super.fixedUpdate(deltaTime, this.level);
     }
 
 }

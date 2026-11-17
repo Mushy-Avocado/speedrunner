@@ -11,38 +11,49 @@ class SimpleBody extends Bounds {
         super(x, y, width, height);
     }
 
+    triggerTile(x, y, tile) {
+
+    }
+
     applyFriction(x, y = x) {
         this.velocityX *= 1 - x;
         this.velocityY *= 1 - y;
     }
 
-    fixedUpdate(deltaTime, levelData, grid) {
+    fixedUpdate(deltaTime, level) {
         // Gravity
         this.isGrounded = false;
         this.velocityY += deltaTime * 980;
 
         // X axis
         this.x += this.velocityX * deltaTime;
-        this.collideLevelDataX(levelData, grid);
+        this.collideLevelX(level);
 
         // Y axis
         this.y += this.velocityY * deltaTime;
-        this.collideLevelDataY(levelData, grid);
+        this.collideLevelY(level);
     }
 
-    collideLevelDataX(levelData, grid) {
-        grid.iterate(this.minX, this.minY, this.width, this.height, (x, y) => {
-            const tile = levelData.getTile(x, y);
+    collideLevelX(level) {
+        level.grid.iterate(this.minX, this.minY, this.width, this.height, (x, y) => {
+            const tile = level.data.getTile(x, y);
             if (tile === 0) {
                 return;
             }
-            const tileX = grid.cellToWorld(x);
-            const tileY = grid.cellToWorld(y);
-            if (this.maxX > tileX && this.minX < tileX + grid.size && this.maxY > tileY && this.minY < tileY + grid.size) {
+            const tileX = level.grid.cellToWorld(x);
+            const tileY = level.grid.cellToWorld(y);
+            const tileType = level.getTileType(x, y);
+            if (this.maxX > tileX && this.minX < tileX + level.grid.size && this.maxY > tileY && this.minY < tileY + level.grid.size) {
+                if (tileType?.trigger) {
+                    tileType.trigger(this, x, y, tile);
+                }
+                if (tileType?.isTrigger) {
+                    return;
+                }
                 if (this.velocityX > 0) {
                     this.x = tileX - this.width;
                 } else {
-                    this.x = tileX + grid.size;
+                    this.x = tileX + level.grid.size;
                 }
                 this.velocityX = 0;
             }
@@ -50,20 +61,27 @@ class SimpleBody extends Bounds {
 
     }
 
-    collideLevelDataY(levelData, grid) {
-        grid.iterate(this.minX, this.minY, this.width, this.height, (x, y) => {
-            const tile = levelData.getTile(x, y);
+    collideLevelY(level) {
+        level.grid.iterate(this.minX, this.minY, this.width, this.height, (x, y) => {
+            const tile = level.data.getTile(x, y);
             if (tile === 0) {
                 return;
             }
-            const tileX = grid.cellToWorld(x);
-            const tileY = grid.cellToWorld(y);
-            if (this.maxX > tileX && this.minX < tileX + grid.size && this.maxY > tileY && this.minY < tileY + grid.size) {
+            const tileX = level.grid.cellToWorld(x);
+            const tileY = level.grid.cellToWorld(y);
+            const tileType = level.getTileType(x, y);
+            if (this.maxX > tileX && this.minX < tileX + level.grid.size && this.maxY > tileY && this.minY < tileY + level.grid.size) {
+                if (tileType?.trigger) {
+                    tileType.trigger(this, x, y, tile);
+                }
+                if (tileType?.isTrigger) {
+                    return;
+                }
                 if (this.velocityY > 0) {
                     this.isGrounded = true;
                     this.y = tileY - this.height;
                 } else {
-                    this.y = tileY + grid.size;
+                    this.y = tileY + level.grid.size;
                 }
                 this.velocityY = 0;
             }
