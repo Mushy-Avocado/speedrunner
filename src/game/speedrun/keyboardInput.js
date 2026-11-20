@@ -5,6 +5,7 @@ function keyboardInput(keyboard) {
         let left = false;
         let right = false;
         let up = false;
+        let down = false;
         if (keyboard.key("KeyA")) {
             left = true;
         }
@@ -14,7 +15,10 @@ function keyboardInput(keyboard) {
         if (keyboard.key("Space")) {
             up = true;
         }
-        characterInput.set(left, right, up);
+        if (keyboard.key("ShiftLeft")) {
+            down = true;
+        }
+        characterInput.set(left, right, up, down);
     };
 }
 

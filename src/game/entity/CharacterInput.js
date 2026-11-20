@@ -8,18 +8,18 @@ class CharacterInput {
         this.down = false;
     }
 
-    set(left, right, up) {
+    set(left, right, up, down) {
         this.left = left;
         this.right = right;
         this.up = this.up || up;
+        this.down = down;
     }
 
     applyCharacter(character) {
         character.isMovingLeft = this.left;
         character.isMovingRight = this.right;
-        if (this.up && character.isGrounded) {
-            character.isQueuedJumping = true;
-        }
+        character.isQueuedJumping = this.up;
+        character.isSprinting = this.down;
         this.up = false;
     }
 

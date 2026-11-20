@@ -1,81 +1,91 @@
 
+const keys = new Set();
+
+window.addEventListener("keydown", e => {
+    keys.add(e.code);
+});
+
+window.addEventListener("keyup", e => {
+    keys.delete(e.code);
+});
 
 class Keyboard {
-    keys = {};
-    pressedKeys = {};
-    releasedKeys = {};
 
-    constructor(target = window) {
-        target.addEventListener("keydown", e => {
-            if (!this.keys[e.code]) {
-                this.pressedKeys[e.code] = true;
+    keys = new Set();
+    pressedKeys = new Set();
+    releasedKeys = new Set();
+
+    startFrame() {
+        for (let key of this.releasedKeys) {
+            if (!this.keys.has(key)) {
+                this.releasedKeys.delete(key);       
             }
-            this.keys[e.code] = true;
-        });
-
-        target.addEventListener("keyup", e => {
-            this.keys[e.code] = false;
-            this.releasedKeys[e.code] = true;
-        });
-    }
-
-    endFrame() {
-        this.pressedKeys = {};
-        this.releasedKeys = {};
+        }
+        for (let key of this.keys) {
+            if (this.pressedKeys.has(key)) {
+                this.pressedKeys.delete(key);
+            }
+            if (!keys.has(key)) {
+                this.releasedKeys.add(key);
+            }
+        }
+        this.keys.clear();
+        for (let key of keys) {
+            if (!this.keys.has(key)) {
+                this.pressedKeys.add(key);
+            }
+            this.keys.add(key);
+        }
     }
 
     key(key) {
-        return !!this.keys[key];
+        return this.keys.has(key);
     }
 
     keyDown(key) {
-        return !!this.pressedKeys[key];
+        return this.pressedKeys.has(key);
     }
 
     keyUp(key) {
-        return !!this.releasedKeys[key];
+        return this.releasedKeys.has(key);
     }
 }
+
+let screenX = 0;
+let screenY = 0;
+const buttons = new Set();
+
+window.addEventListener("mousemove", e => {{
+    screenX = e.clientX;
+    screenY = e.clientY;
+}});
+
+window.addEventListener("mousedown", e => {
+    buttons.add(e.button);
+});
+
+window.addEventListener("mouseup", e => {
+    buttons.delete(e.button);
+});
 
 class Mouse {
 
     x = 0;
     y = 0;
     camera = null;
-    screenX = 0;
-    screenY = 0;
-    buttons = {};
-    pressedButtons = {};
-    releasedButtons = {};
+    buttons = new Set();
+    pressedButtons = new Set();
+    releasedButtons = new Set();
 
     constructor(canvas) {
         this.canvas = canvas;
-
-        window.addEventListener("mousemove", (e) => {
-            this.screenX = e.clientX;
-            this.screenY = e.clientY;
-        });
-
-        window.addEventListener("mousedown", (e) => {
-            if (!this.buttons[e.button]) {
-                this.pressedButtons[e.button] = true;
-            }
-            this.buttons[e.button] = true;
-        });
-
-        window.addEventListener("mouseup", (e) => {
-            this.buttons[e.button] = false;
-            this.releasedButtons[e.button] = true;
-        });
-
-        canvas.addEventListener("contextmenu", e => e.preventDefault());
+        canvas.oncontextmenu = e => e.preventDefault();
     }
 
     updatePosition() {
-
         const rect = this.canvas.getBoundingClientRect();
-        const sx = (this.screenX - rect.left) * (this.canvas.width / rect.width);
-        const sy = (this.screenY - rect.top) * (this.canvas.height / rect.height);
+        const sx = (screenX - rect.left) * (this.canvas.width / rect.width);
+        const sy = (screenY - rect.top) * (this.canvas.height / rect.height);
         const cam = this.camera;
         if (!cam) {
             this.x = sx;
@@ -87,22 +97,40 @@ class Mouse {
         this.y = pos.y;
     }
 
-    endFrame() {
-        this.pressedButtons = {};
-        this.releasedButtons = {};
+    startFrame() {
+        for (let button of this.releasedButtons) {
+            if (!this.buttons.has(button)) {
+                this.releasedButtons.delete(button);
+            }
+        }
+        for (let button of this.buttons) {
+            if (this.pressedButtons.has(button)) {
+                this.pressedButtons.delete(button);
+            }
+            if (!buttons.has(button)) {
+                this.releasedButtons.add(button);
+            }
+        }
+        this.buttons.clear();
+        for (let button of buttons) {
+            if (!this.buttons.has(button)) {
+                this.pressedButtons.add(button);
+            }
+            this.buttons.add(button);
+        }
         this.updatePosition(); 
     }
 
     button(button = 0) {
-        return !!this.buttons[button];
+        return this.buttons.has(button);
     }
 
     buttonDown(button = 0) {
-        return !!this.pressedButtons[button];
+        return this.pressedButtons.has(button);
     }
 
     buttonUp(button = 0) {
-        return !!this.releasedButtons[button];
+        return this.releasedButtons.has(button);
     }
 
     setCamera(camera) {

@@ -1,7 +1,7 @@
 
 // DO NOT CHANGE once in production
 // Replay data relies on the same value to reproduce the same results
-const FIXED_DELTA_TIME = 1 / 30;
+const FIXED_DELTA_TIME = 1 / 20;
 
 class FixedIntervalCallback {
     deltaTime = FIXED_DELTA_TIME;

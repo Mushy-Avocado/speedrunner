@@ -30,3 +30,5 @@ Desktop.ini
 *.swo
 .VSCodeCounter/
 webpack.config.js
+
+src/playground

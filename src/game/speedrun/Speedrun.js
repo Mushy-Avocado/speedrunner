@@ -23,7 +23,11 @@ class Speedrun {
     fixedUpdate(deltaTime) {
         this.recorder.fixedUpdate(deltaTime);
         if (this.playback) {
-            this.playback.fixedUpdate(deltaTime);
+            try {
+                this.playback.fixedUpdate(deltaTime);
+            } catch(e) {
+                console.log(e);
+            }
         }
     }
 

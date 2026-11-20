@@ -27,6 +27,9 @@ class Game {
 
         // Updates at the monitor refresh rate
         this.mainLoop = new MainLoop(timestamp => {
+            this.keyboard.startFrame();
+            this.mouse.startFrame();
+
             this.display.updateSize();
             this.ctx.save();
             this.display.applyScaling();
@@ -47,8 +50,6 @@ class Game {
             this.render(this.ctx, alpha);
 
             this.ctx.restore();
-            this.keyboard.endFrame();
-            this.mouse.endFrame();
         });
     }
     

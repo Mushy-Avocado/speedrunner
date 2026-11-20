@@ -6,13 +6,11 @@ class SimpleBody extends Bounds {
 
     velocityX = 0;
     velocityY = 0;
+
+    gravity = 2500;
     
     constructor(x, y, width, height) {
         super(x, y, width, height);
-    }
-
-    triggerTile(x, y, tile) {
-
     }
 
     applyFriction(x, y = x) {
@@ -23,14 +21,15 @@ class SimpleBody extends Bounds {
     fixedUpdate(deltaTime, level) {
         // Gravity
         this.isGrounded = false;
-        this.velocityY += deltaTime * 980;
-
+        
         // X axis
         this.x += this.velocityX * deltaTime;
         this.collideLevelX(level);
-
+        
         // Y axis
+        this.velocityY += 0.5 * deltaTime * this.gravity;
         this.y += this.velocityY * deltaTime;
+        this.velocityY += 0.5 * deltaTime * this.gravity;
         this.collideLevelY(level);
     }
 

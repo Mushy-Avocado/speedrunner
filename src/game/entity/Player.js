@@ -7,6 +7,10 @@ class Player extends Character {
         this.previousY = y;
     }
 
+    coyoteTime = 1;
+    jumpBufferTime = 3;
+    variableJumpScale = 0.7;
+
     update() {
 
     }

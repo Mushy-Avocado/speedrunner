@@ -54,10 +54,23 @@ class UIEvents {
     }
 }
 
+class UIPaint {
+    contexts = {};
+
+    addCanvas(canvas) {
+        this.contexts[canvas.dataset.canvas] = canvas.getContext("2d");
+    }
+
+    getContext(name) {
+        return this.contexts[name];
+    }
+}
+
 class UIMenu {
     
     data = new UIData();
     events = new UIEvents();
+    paint = new UIPaint();
 
     constructor(container) {
         this.container = container;
@@ -93,6 +106,10 @@ class UIMenu {
                 }
                 this.events.invoke(action);
             });
+        }
+        const canvases = Array.from(container.querySelectorAll("[data-canvas]"));
+        for (let canvas of canvases) {
+            this.paint.addCanvas(canvas);
         }
         this.close();
     }
